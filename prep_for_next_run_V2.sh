@@ -147,7 +147,28 @@ then
 			read nstopNew
 			echo Enter new sbatch
 			read sbatchNew
-			sed -i ""
+			
+			for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB; dropSize=$dropSize+$dropSizeInc))
+			do
+				# Generating path variable
+				# ------------------------
+				pathModel="Rr$dropSize$dropSize"
+				pathDestination1=$pathBase/$pathModel/gomic2ihydro0
+				pathDestination2=$pathBase/$pathModel/gomic2ihydro1
+
+				# Shifting into gomic2ihydro0
+				# ---------------------------
+				cd $pathDestination1
+				
+				# Making changes to SBATCH and nstop
+				# ----------------------------------
+				# The 'c' command tells sed to replace the entire line (which contains the pattern specified in sed) with a new pattern. 
+				# Remember to use double quotes to allow the shell to expand the variables.
+				sed -i "/#SBATCH --time=/ c #SBATCH --time=$sbatchNew" run_graham.sh
+				# 148 -> line number to be changed, c -> replace entire line with pattern that follows. Double quotes to allow shell expansion of variables.
+				# For more robust text editing consider using gawk.
+				sed -i "148 c nstop    =$nstopNew"   
+			done	
 
 		# Initiating loop to cycle through paths
 		for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB; dropSize=$dropSize+$dropSizeInc))
