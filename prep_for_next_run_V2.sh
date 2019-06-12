@@ -134,15 +134,16 @@ then
 	then
 		# Current simulation time /(obtained from Rr1010/)
 		echo The current nstop and sbatch are \(obtained from Rr1010\):
-		nStop=$(grep nstop main.F90)
-		echo nStop
-		sBatch=$(grep 'SBATCH --time' run_graham.sh) 
-		echo sBatch
+		nStop=$(grep "nstop    =" $pathBase/Rr1010/gomic0/main.F90)
+		echo "nstop: $nStop"
+		sBatch=$(grep 'SBATCH --time' $pathBase/Rr1010/gomic0/run_graham.sh) 
+		echo "SBATCH: $sBatch"
 		echo
 		# Allow the user to modify the simulation run time
 		echo Do you want to change nstop and sbatch? \(y/n\)
 		read varTimeStep
 		if [ "$varTimeStep" == "y" ]
+		then
 			echo Enter new nstop
 			read nstopNew
 			echo Enter new sbatch
@@ -167,8 +168,23 @@ then
 				sed -i "/#SBATCH --time=/ c #SBATCH --time=$sbatchNew" run_graham.sh
 				# 148 -> line number to be changed, c -> replace entire line with pattern that follows. Double quotes to allow shell expansion of variables.
 				# For more robust text editing consider using gawk.
-				sed -i "148 c nstop    =$nstopNew"   
-			done	
+				sed -i "148 c nstop    =$nstopNew" main.F90  
+				
+				
+				# Shifting into gomic2ihydro1
+				# ---------------------------
+				cd $pathDestination2
+				
+				# Making changes to SBATCH and nstop
+				# ----------------------------------
+				# The 'c' command tells sed to replace the entire line (which contains the pattern specified in sed) with a new pattern. 
+				# Remember to use double quotes to allow the shell to expand the variables.
+				sed -i "/#SBATCH --time=/ c #SBATCH --time=$sbatchNew" run_graham.sh
+				# 148 -> line number to be changed, c -> replace entire line with pattern that follows. Double quotes to allow shell expansion of variables.
+				# For more robust text editing consider using gawk.
+				sed -i "148 c nstop    =$nstopNew" main.F90  
+			done
+		fi	
 
 		# Initiating loop to cycle through paths
 		for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB; dropSize=$dropSize+$dropSizeInc))
