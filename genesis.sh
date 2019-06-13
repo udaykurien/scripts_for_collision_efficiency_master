@@ -38,7 +38,8 @@ do
 	do
 		finalClonePath="$baseClonePath/$EDR/Rr$DropSize$DropSize/gomic0"
 		mkdir -pv $finalClonePath
-		cp -rv $parentPath/ $finalClonePath
+		cp -rv $parentPath/ $finalClonePath/
+		cd $finalClonePath
 
 		# Checking and modifying cloned content to generate multiple model instances
 		# -------------------------------------------------------------------------
@@ -46,4 +47,8 @@ do
 		# Use grep to check for the pattern
 		# If the pattern is present (grep exit status = 0) no changes are made
 		# If the pattern is absent (grep exit status != 0). SED is used to update the pattern
+
+		if !(grep "nstop    =$nstop" main.F90)
+		then
+
 
