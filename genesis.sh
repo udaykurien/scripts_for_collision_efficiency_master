@@ -44,11 +44,83 @@ do
 		# Checking and modifying cloned content to generate multiple model instances
 		# -------------------------------------------------------------------------
 		# Implementation:
-		# Use grep to check for the pattern
-		# If the pattern is present (grep exit status = 0) no changes are made
-		# If the pattern is absent (grep exit status != 0). SED is used to update the pattern
+		# 1. Use grep to check for the pattern
+		# 2. If the pattern is present (grep exit status = 0) no changes are made
+		# 3. If the pattern is absent (grep exit status != 0). SED is used to update the pattern
 
-		if !(grep "nstop    =$nstop" main.F90)
+		
+		# Illustration of implementation on nstop (contained within main.F90)
+		# -------------------------------------------------------------------
+		# Checking if pattern is present
+		grep -q "nstop    = $nstop" main.F90
+		
+		# Recording exit status
+		exitStatus1=#?
+
+		# Modification of file parameters (via sed) contingent on exit status
+		if [ $exitStatus1 -gt 0 ]
 		then
+			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+		fi
+		#--------------------------------------------------------------------
+		# This implementation is here on forth applied to other file contents
+
+		# gomic
+		# -----
+		grep -q "nstop    = $nstop" main.F90
+		exitStatus1=#?
+		if [ $exitStatus1 -gt 0 ]
+		then
+			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+		fi
+		
+		# ihydro
+		# ------
+		grep -q "nstop    = $nstop" main.F90
+		exitStatus1=#?
+		if [ $exitStatus1 -gt 0 ]
+		then
+			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+		fi
+
+		# drop radius
+		# -----------
+		grep -q "nstop    = $nstop" main.F90
+		exitStatus1=#?
+		if [ $exitStatus1 -gt 0 ]
+		then
+			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+		fi
+
+		# Inital drop number
+		# ------------------
+		grep -q "nstop    = $nstop" main.F90
+		exitStatus1=#?
+		if [ $exitStatus1 -gt 0 ]
+		then
+			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+		fi
+
+		# EDR
+		# ---
+		grep -q "nstop    = $nstop" main.F90
+		exitStatus1=#?
+		if [ $exitStatus1 -gt 0 ]
+		then
+			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+		fi
+
+		# Wall time
+		# ---------
+		grep -q "nstop    = $nstop" main.F90
+		exitStatus1=#?
+		if [ $exitStatus1 -gt 0 ]
+		then
+			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+		fi
+
+
+
+
 
 
