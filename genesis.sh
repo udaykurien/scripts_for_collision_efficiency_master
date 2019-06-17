@@ -55,7 +55,7 @@ do
 		grep -q "nstop    = $nstop" main.F90
 		
 		# Recording exit status
-		exitStatus1=#?
+		exitStatus1=$?
 
 		# Modification of file parameters (via sed) contingent on exit status
 		if [ $exitStatus1 -gt 0 ]
@@ -67,58 +67,45 @@ do
 
 		# gomic
 		# -----
-		grep -q "nstop    = $nstop" main.F90
-		exitStatus1=#?
+		grep -q "gomic= 0" param.inc
+		exitStatus1=$?
 		if [ $exitStatus1 -gt 0 ]
 		then
-			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+			sed -i "s/gomic= [0-9]/gomic= 0/" param.inc
 		fi
 		
 		# ihydro
 		# ------
-		grep -q "nstop    = $nstop" main.F90
-		exitStatus1=#?
+		grep -q "ihydro   = 0" main.F90
+		exitStatus1=$?
 		if [ $exitStatus1 -gt 0 ]
 		then
-			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+			sed -i "s/ihydro   = [0-9]/ihydro   = 0/" main.F90
 		fi
 
 		# drop radius
 		# -----------
-		grep -q "nstop    = $nstop" main.F90
-		exitStatus1=#?
+		grep -q "r=${DropSize}.d-6" main.F90
+		exitStatus1=$?
 		if [ $exitStatus1 -gt 0 ]
 		then
-			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
-		fi
-
-		# Inital drop number
-		# ------------------
-		grep -q "nstop    = $nstop" main.F90
-		exitStatus1=#?
-		if [ $exitStatus1 -gt 0 ]
-		then
-			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+			sed -i "s/r=[0-9][0-9].d-6/r=${DropSize}.d-6/" main.F90
 		fi
 
 		# EDR
 		# ---
-		grep -q "nstop    = $nstop" main.F90
-		exitStatus1=#?
+		grep -q "edr      = $EDR" main.F90
+		exitStatus1=$?
 		if [ $exitStatus1 -gt 0 ]
 		then
-			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+			sed -i "s/edr      = [0-9].[0-9][0-9]/edr      = $EDR/" main.F90
 		fi
 
-		# Wall time
-		# ---------
-		grep -q "nstop    = $nstop" main.F90
-		exitStatus1=#?
-		if [ $exitStatus1 -gt 0 ]
-		then
-			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
-		fi
+	done
+done
 
+
+		
 
 
 
