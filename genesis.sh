@@ -30,16 +30,16 @@ read baseClonePath
 
 # Outer loop
 # ----------
-for (( EDR=$lbEDR; EDR<=$ubEDR; EDR=$EDR+$incEDR ))
+for  EDR in $(seq $lbEDR $incEDR $ubEDR)
 do
 	# Inner loop
 	# ----------
 	for (( DropSize=$lbDropSize; DropSize<=$ubDropSize; DropSize=$DropSize+$incDropSize ))
 	do
-		finalClonePath="$baseClonePath/$EDR/Rr$DropSize$DropSize/gomic0"
+		finalClonePath="$baseClonePath/$EDR/Rr$DropSize$DropSize"
 		mkdir -pv $finalClonePath
 		cp -rv $parentPath/ $finalClonePath/
-		cd $finalClonePath
+		cd $finalClonePath/gomic0
 
 		# Checking and modifying cloned content to generate multiple model instances
 		# -------------------------------------------------------------------------
@@ -85,11 +85,11 @@ do
 
 		# drop radius
 		# -----------
-		grep -q "r=${DropSize}.d-6" main.F90
+		grep -q "r=${DropSize}.d-6" idrops.F90
 		exitStatus1=$?
 		if [ $exitStatus1 -gt 0 ]
 		then
-			sed -i "s/r=[0-9][0-9].d-6/r=${DropSize}.d-6/" main.F90
+			sed -i "s/r=[0-9][0-9].d-6/r=${DropSize}.d-6/" idrops.F90
 		fi
 
 		# EDR
