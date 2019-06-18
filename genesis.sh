@@ -6,6 +6,7 @@
 
 echo "Enter path to parent model:"
 read parentPath
+echo
 
 echo "Enter lowerbound EDR:"
 read lbEDR
@@ -13,6 +14,7 @@ echo "Enter upperbound EDR:"
 read ubEDR
 echo "Enter EDR increments:"
 read incEDR
+echo
 
 echo "Enter lowerbound drop size:"
 read lbDropSize
@@ -20,6 +22,13 @@ echo "Enter upperbound drop size:"
 read ubDropSize
 echo "Enter dropsize increments:"
 read incDropSize
+echo
+
+echo "Enter the value of nstop:"
+read nstop
+echo "Enter the wall time:"
+read sbatch
+echo 
 
 echo "Enter location of cloned models:"
 read baseClonePath
@@ -60,7 +69,7 @@ do
 		# Modification of file parameters (via sed) contingent on exit status
 		if [ $exitStatus1 -gt 0 ]
 		then
-			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block"
+			sed -i "148 c nstop    = $nstop              ! number of timesteps in current restart block" main.F90
 		fi
 		#--------------------------------------------------------------------
 		# This implementation is here on forth applied to other file contents
