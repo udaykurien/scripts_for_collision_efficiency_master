@@ -18,6 +18,13 @@ then
 	echo Enter the increments through which the droplet size was changed
 	read dropSizeInc
 
+	echo Enter the lower value of EDR
+	read lbEDR
+	echo Enter the upper value of EDR
+	read ubEDR
+	echo Enter the increments in EDR
+	read incEDR
+
 	echo Please specify gomic flag used 
 	echo Note the following:
 	echo gomic = 0 will spawn gomic1 with appropriately modified flags and restart files  
@@ -29,105 +36,110 @@ then
 	if [ $gomicFlag -eq 0 ] 
 	then
 		# Initiating loop to cycle throug paths
-		for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
-		do			
-			# Cloning model and output files to new directory
-			# -----------------------------------------------
-			pathModel="Rr$dropSize$dropSize"
-			echo $pathModel
-			pathOrigin="$pathBase/$pathModel/gomic0"
-			pathDestination="$pathBase/$pathModel/gomic1"
-			
-			echo Creating gomic1
-			mkdir -p $pathDestination
-			echo
-			
-			echo Cloning gomic0 to gomic1
-			cp -r $pathOrigin/* $pathDestination/
-			echo
+		for EDR in $(seq $lbEDR $incEDR $ubEDR)
+		do
+			for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
+			do			
+				# Cloning model and output files to new directory
+				# -----------------------------------------------
+				pathModel="$EDR/Rr$dropSize$dropSize"
+				pathOrigin="$pathBase/$pathModel/gomic0"
+				pathDestination="$pathBase/$pathModel/gomic1"
+				
+				echo Creating gomic1
+				mkdir -p $pathDestination
+				echo
+				
+				echo Cloning gomic0 to gomic1
+				cp -r $pathOrigin/* $pathDestination/
+				echo
 
-			# Naming restart files
-			# --------------------
-			cd $pathDestination/
-			echo Renaming turbulent restart file,in gomic1, from Zk4.out.ncf to Zk.in.ncf
-			mv Zk4.out.ncf Zk.in.ncf
-			echo
+				# Naming restart files
+				# --------------------
+				cd $pathDestination/
+				echo Renaming turbulent restart file,in gomic1, from Zk4.out.ncf to Zk.in.ncf
+				mv Zk4.out.ncf Zk.in.ncf
+				echo
 
-			# Modifying model flags for next run
-			# ----------------------------------
-			echo Changing value of gomic flag from 0 to 1, in gomic1
-			sed -i 's/gomic= 0/gomic= 1/g' param.inc
-			echo	
+				# Modifying model flags for next run
+				# ----------------------------------
+				echo Changing value of gomic flag from 0 to 1, in gomic1
+				sed -i 's/gomic= 0/gomic= 1/g' param.inc
+				echo	
+			done
 		done
 
 
 	elif [ $gomicFlag -eq 1 ]
 	then
 		#Initiating loop to cycle through paths
-		for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
-		do			
-		
-			# Cloning model and output files to new directories
-			# -------------------------------------------------
-			pathModel="Rr$dropSize$dropSize"
-			pathOrigin=$pathBase/$pathModel/gomic1
-			pathDestination1=$pathBase/$pathModel/gomic2ihydro0
-			pathDestination2=$pathBase/$pathModel/gomic2ihydro1
+		for EDR in $(seq $lbEDR $incEDR $ubEDR)
+		do
+			for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
+			do			
 			
-			echo Creating gomic2ihydro0
-			mkdir -p $pathDestination1
-			echo
+				# Cloning model and output files to new directories
+				# -------------------------------------------------
+				pathModel="$EDR/Rr$dropSize$dropSize"
+				pathOrigin=$pathBase/$pathModel/gomic1
+				pathDestination1=$pathBase/$pathModel/gomic2ihydro0
+				pathDestination2=$pathBase/$pathModel/gomic2ihydro1
+				
+				echo Creating gomic2ihydro0
+				mkdir -p $pathDestination1
+				echo
 
-			echo Creating gomic2ihydro1
-			mkdir -p $pathDestination2
-			echo
+				echo Creating gomic2ihydro1
+				mkdir -p $pathDestination2
+				echo
 
-			echo Cloning gomic1 to gomic2ihydro0
-			cp -r $pathOrigin/* $pathDestination1/
-			echo
+				echo Cloning gomic1 to gomic2ihydro0
+				cp -r $pathOrigin/* $pathDestination1/
+				echo
 
-			echo Cloning gomic1 to gomic2ihydro1
-			cp -r $pathOrigin/* $pathDestination2/
-			echo
+				echo Cloning gomic1 to gomic2ihydro1
+				cp -r $pathOrigin/* $pathDestination2/
+				echo
 
-			
-			# Shifting into gomic2ihydro0 folder
-			#-----------------------------------
-			cd $pathDestination1
+				
+				# Shifting into gomic2ihydro0 folder
+				#-----------------------------------
+				cd $pathDestination1
 
-			# Naming restart files
-			# --------------------
-			echo Naming droplet distribution and turbulent restart files in gomic2ihydro0
-			rm Zk.in.ncf
-			mv Zk4.out.ncf Zk.in.ncf
-			mv drop4.out.ncf drop.in.ncf
-			echo
+				# Naming restart files
+				# --------------------
+				echo Naming droplet distribution and turbulent restart files in gomic2ihydro0
+				mv Zk.in.ncf Zk.in.ncf.old1
+				mv Zk4.out.ncf Zk.in.ncf
+				mv drop4.out.ncf drop.in.ncf
+				echo
 
-			# Modifying model flags for next run
-			# ----------------------------------
-			echo Changing flags gomic and ihydro from 1 and 0 to 2 and 1, respectively
-			sed -i 's/gomic= 1/gomic= 2/g' param.inc
-			sed -i 's/ihydro   = 0/ihydro   = 0/g' main.F90
-			echo
+				# Modifying model flags for next run
+				# ----------------------------------
+				echo Changing flags gomic and ihydro from 1 and 0 to 2 and 1, respectively
+				sed -i 's/gomic= 1/gomic= 2/g' param.inc
+				sed -i 's/ihydro   = 0/ihydro   = 0/g' main.F90
+				echo
 
-			# Shifting into gomic2ihydro1 folder
-			# ----------------------------------
-			cd $pathDestination2
+				# Shifting into gomic2ihydro1 folder
+				# ----------------------------------
+				cd $pathDestination2
 
-			# Naming restart files
-			# --------------------
-			echo Naming droplet distribution and turbulent restart files in gomic2ihydro1
-			rm Zk.in.ncf
-			mv Zk4.out.ncf Zk.in.ncf
-			mv drop4.out.ncf drop.in.ncf
-			echo 
+				# Naming restart files
+				# --------------------
+				echo Naming droplet distribution and turbulent restart files in gomic2ihydro1
+				mv Zk.in.ncf Zk.in.ncf.old1
+				mv Zk4.out.ncf Zk.in.ncf
+				mv drop4.out.ncf drop.in.ncf
+				echo 
 
-			# Modifying model flags for next run
-			# ----------------------------------
-			echo Changing flags gomic and ihydro from 1 and 0 to 2 and 1, respectively
-			sed -i 's/gomic= 1/gomic= 2/g' param.inc
-			sed -i 's/ihydro   = 0/ihydro   = 1/g' main.F90
-			echo
+				# Modifying model flags for next run
+				# ----------------------------------
+				echo Changing flags gomic and ihydro from 1 and 0 to 2 and 1, respectively
+				sed -i 's/gomic= 1/gomic= 2/g' param.inc
+				sed -i 's/ihydro   = 0/ihydro   = 1/g' main.F90
+				echo
+			done
 		done
 
 	elif [ $gomicFlag -eq 2 ]
@@ -149,13 +161,15 @@ then
 			echo Enter new sbatch
 			read sbatchNew
 			
+		for EDR in $(seq $lbEDR $incEDR $ubEDR)
+		do
 			for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB; dropSize=$dropSize+$dropSizeInc))
 			do
 				# Generating path variable
 				# ------------------------
-				pathModel="Rr$dropSize$dropSize"
-				pathDestination1=$pathBase/$pathModel/gomic2ihydro0
-				pathDestination2=$pathBase/$pathModel/gomic2ihydro1
+				pathModel="$EDR/Rr$dropSize$dropSize"
+				pathDestination1="$pathBase/$pathModel/gomic2ihydro0"
+				pathDestination2="$pathBase/$pathModel/gomic2ihydro1"
 
 				# Shifting into gomic2ihydro0
 				# ---------------------------
@@ -184,40 +198,42 @@ then
 				# For more robust text editing consider using gawk.
 				sed -i "148 c nstop    =$nstopNew" main.F90  
 			done
+		done
 		fi	
 
 		# Initiating loop to cycle through paths
-		for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB; dropSize=$dropSize+$dropSizeInc))
+		for EDR in $(seq $lbEDR $incEDR $ubEDR)
 		do
-			# Generating path variable
-			# ------------------------
-			pathModel="Rr$dropSize$dropSize"
-			pathDestination1=$pathBase/$pathModel/gomic2ihydro0
-			pathDestination2=$pathBase/$pathModel/gomic2ihydro1
+			for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB; dropSize=$dropSize+$dropSizeInc))
+			do
+				# Generating path variable
+				# ------------------------
+				pathModel="$EDR/Rr$dropSize$dropSize"
+				pathDestination1=$pathBase/$pathModel/gomic2ihydro0
+				pathDestination2=$pathBase/$pathModel/gomic2ihydro1
 
-			# Shifting into gomic2ihydro0
-			# ---------------------------
-			cd $pathDestination1
+				# Shifting into gomic2ihydro0
+				# ---------------------------
+				cd $pathDestination1
 
-			# Renaming restart file, deprecating and preserving last restart file
-			# -------------------------------------------------------------------
+				# Renaming restart file, deprecating and preserving last restart file
+				# -------------------------------------------------------------------
 
-			# Count the number of old restart files and store them in variable counter
-			counterZk=$(ls -l Zk.in.ncf* | wc -l)
-			counterDrop=$(ls -l drop.in.ncf* | wc -l)
-			
-			# Appending the count to the now obsolete restart files
-			mv Zk.in.ncf Zk.in.ncf.old$counterZk
-			mv drop.in.ncf drop.in.ncf.old$counterDrop
+				# Count the number of old restart files and store them in variable counter
+				counterZk=$(ls -l Zk.in.ncf* | wc -l)
+				counterDrop=$(ls -l drop.in.ncf* | wc -l)
+				
+				# Appending the count to the now obsolete restart files
+				mv Zk.in.ncf Zk.in.ncf.old$counterZk
+				mv drop.in.ncf drop.in.ncf.old$counterDrop
 
-			# Naming new restart files
-			mv Zk4.out.ncf Zk.in.ncf
-			mv drop4.out.ncf drop.in.ncf
+				# Naming new restart files
+				mv Zk4.out.ncf Zk.in.ncf
+				mv drop4.out.ncf drop.in.ncf
+			done
 		done
-
-
-
 	fi
+
 elif [ $varChoice -eq 2 ]
 then
 	echo Code for this part has not been written as yet.

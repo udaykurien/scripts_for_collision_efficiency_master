@@ -11,6 +11,13 @@ read varChoice
 if [ $varChoice -eq 1 ]
 then
 	# Gathering info on data to be prepped
+	echo Enter lower value of EDR
+	read lbEDR
+	echo Enter upper value of EDR
+	read ubEDR
+	echo Ennter the increments in EDR value
+	read incEDR
+
 	echo Enter the smallest droplet size for which the simulation was run
 	read dropSizeLB
 	echo Enter the largest drop size for which the simulation was run
@@ -29,22 +36,25 @@ then
 	if [ "$gomicFlag" == "0" ] && [ "$iHydro" == "0" ] 
 	then
 		# Initiating loop to cycle through paths
-		for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
-		do			
-			# Following path
-			# --------------
-			pathModel="Rr$dropSize$dropSize"
-			pathFinal="$pathBase/$pathModel/gomic0"
-			
-			echo Entering $pathFinal :
-			cd $pathFinal
-			echo
-			
-			# Launch simulation from within directory
-			# ---------------------------------------
-			echo Launching simulation :
-			./compileandrun_graham
-			echo
+		for EDR in $(seq $lbEDR $incEDR $ubEDR)
+		do
+			for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
+			do			
+				# Following path
+				# --------------
+				pathModel="$EDR/Rr$dropSize$dropSize"
+				pathFinal="$pathBase/$pathModel/gomic0"
+				
+				echo Entering $pathFinal :
+				cd $pathFinal
+				echo
+				
+				# Launch simulation from within directory
+				# ---------------------------------------
+				echo Launching simulation :
+				./compileandrun_graham
+				echo
+			done
 		done
 
 	# gomic = 1 and ihydro = 0
@@ -52,23 +62,26 @@ then
 	elif [ "$gomicFlag" == "1" ] && [ "$iHydro" == "0" ]
 	then
 		#Initiating loop to cycle through paths
-		for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
-		do			
-		
-			# Following path
-			# --------------
-			pathModel="Rr$dropSize$dropSize"
-			pathFinal="$pathBase/$pathModel/gomic1"
+		for EDR in $(seq $lbEDR $incEDR $ubEDR)
+		do
+			for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
+			do			
+			
+				# Following path
+				# --------------
+				pathModel="Rr$dropSize$dropSize"
+				pathFinal="$pathBase/$pathModel/gomic1"
 
-			echo Entering $pathFinal:
-			cd $pathFinal
-			echo
+				echo Entering $pathFinal:
+				cd $pathFinal
+				echo
 
-			# Launch simulation from within directory
-			# ---------------------------------------
-			echo Launching simulation:
-			./compileandrun_graham
-			echo
+				# Launch simulation from within directory
+				# ---------------------------------------
+				echo Launching simulation:
+				./compileandrun_graham
+				echo
+			done
 		done
 
 	# gomic = 2 and ihydro = 0
@@ -76,23 +89,26 @@ then
 	elif [ "$gomicFlag" == "2" ] && [ "$iHydro" == "0" ]
 	then
 		#Initiating loop to cycle through paths
-		for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
-		do			
-		
-			# Following path
-			# --------------
-			pathModel="Rr$dropSize$dropSize"
-			pathFinal="$pathBase/$pathModel/gomic2ihydro0"
+		for EDR in $(seq $lbEDR $incEDR $ubEDR)
+		do
+			for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
+			do			
+			
+				# Following path
+				# --------------
+				pathModel="Rr$dropSize$dropSize"
+				pathFinal="$pathBase/$pathModel/gomic2ihydro0"
 
-			echo Entering $pathFinal:
-			cd $pathFinal
-			echo
+				echo Entering $pathFinal:
+				cd $pathFinal
+				echo
 
-			# Launch simulation from within directory
-			# ---------------------------------------
-			echo Launching simulation:
-			./compileandrun_graham
-			echo
+				# Launch simulation from within directory
+				# ---------------------------------------
+				echo Launching simulation:
+				./compileandrun_graham
+				echo
+			done
 		done
 
 	# gomic = 2 and ihydro = 1
@@ -100,23 +116,26 @@ then
 	elif [ "$gomicFlag" == "2" ] && [ "$iHydro" == "1" ]
 	then
 		#Initiating loop to cycle through paths
-		for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
-		do			
-		
-			# Following path
-			# --------------
-			pathModel="Rr$dropSize$dropSize"
-			pathFinal="$pathBase/$pathModel/gomic2ihydro1"
+		for EDR in $(seq $lbEDR $incEDR $ubEDR)
+		do
+			for (( dropSize=$dropSizeLB; dropSize<=$dropSizeUB;dropSize=$dropSize+$dropSizeInc))
+			do			
+			
+				# Following path
+				# --------------
+				pathModel="Rr$dropSize$dropSize"
+				pathFinal="$pathBase/$pathModel/gomic2ihydro1"
 
-			echo Entering $pathFinal:
-			cd $pathFinal
-			echo
+				echo Entering $pathFinal:
+				cd $pathFinal
+				echo
 
-			# Launch simulation from within directory
-			# ---------------------------------------
-			echo Launching simulation:
-			./compileandrun_graham
-			echo
+				# Launch simulation from within directory
+				# ---------------------------------------
+				echo Launching simulation:
+				./compileandrun_graham
+				echo
+			done
 		done
 	fi
 

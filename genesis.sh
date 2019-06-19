@@ -74,6 +74,15 @@ do
 		#--------------------------------------------------------------------
 		# This implementation is here on forth applied to other file contents
 
+		# sbatch
+		# ------
+		grep -q "#SBATCH --time=$sbatch" run_graham.sh
+		exitStatus1=$?
+		if [ $exitStatus1 -gt 0 ]
+		then
+			sed -i "s/#SBATCH --time=[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/#SBATCH --time=$sbatch/" run_graham.sh
+		fi
+		
 		# gomic
 		# -----
 		grep -q "gomic= 0" param.inc
