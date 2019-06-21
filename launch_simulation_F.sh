@@ -2,7 +2,7 @@
 
 # This script sequentially launches multiples instances of the simulation
 
-pathBase="/home/ukurien/projects/def-yaumanko/ukurien/ED50"
+pathBase="/home/ukurien/projects/def-yaumanko/ukurien/Clones_1"
 
 echo Press 1 for simulation with monodisperse 
 echo Press 2 for bi disperse
@@ -53,6 +53,7 @@ then
 				# ---------------------------------------
 				echo Launching simulation :
 				./compileandrun_graham
+				sleep 2 # To satisfy computecanada's requirements
 				echo
 			done
 		done
@@ -80,6 +81,7 @@ then
 				# ---------------------------------------
 				echo Launching simulation:
 				./compileandrun_graham
+				sleep 2 # To satisfy computecanada's requirements
 				echo
 			done
 		done
@@ -107,6 +109,7 @@ then
 				# ---------------------------------------
 				echo Launching simulation:
 				./compileandrun_graham
+				sleep 2 # To satisfy computecanada's requirements
 				echo
 			done
 		done
@@ -134,6 +137,7 @@ then
 				# ---------------------------------------
 				echo Launching simulation:
 				./compileandrun_graham
+				sleep 2 # To satisfy computecanada's requirements
 				echo
 			done
 		done

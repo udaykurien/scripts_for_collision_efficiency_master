@@ -6,6 +6,7 @@
 
 echo "Enter path to parent model:"
 read parentPath
+parentPath="/home/ukurien/projects/def-yaumanko/ukurien/ED50/Rr1010/gomic0"
 echo
 
 echo "Enter lowerbound EDR:"
@@ -32,6 +33,7 @@ echo
 
 echo "Enter location of cloned models:"
 read baseClonePath
+baseClonePath="/home/ukurien/projects/def-yaumanko/ukurien/Clones_1"
 
 # Implementation of genesis:
 # Nested loops: Outer loop -> EDR, Inner loop -> Drop size
@@ -47,7 +49,7 @@ do
 	do
 		finalClonePath="$baseClonePath/$EDR/Rr$DropSize$DropSize"
 		mkdir -pv $finalClonePath
-		cp -rv $parentPath/ $finalClonePath/
+		cp -rv $parentPath/ $finalClonePath/gomic0/
 		cd $finalClonePath/gomic0
 
 		# Checking and modifying cloned content to generate multiple model instances
