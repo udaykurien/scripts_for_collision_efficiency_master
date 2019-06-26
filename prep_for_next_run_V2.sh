@@ -2,7 +2,7 @@
 
 # This script preps for the next model run
 
-pathBase="/home/ukurien/projects/def-yaumanko/ukurien/ED50"
+pathBase="/home/ukurien/projects/def-yaumanko/ukurien/Clones_1"
 
 echo Press 1 for simulation with monodisperse 
 echo Press 2 for bi disperse
@@ -72,6 +72,23 @@ then
 
 	elif [ $gomicFlag -eq 1 ]
 	then
+		# Current simulation time /(obtained from Rr1010/)
+		echo The current nstop and sbatch are \(obtained from Rr1010\):
+		nStop=$(grep "nstop    =" $pathBase/Rr1010/gomic0/main.F90)
+		echo "nstop: $nStop"
+		sBatch=$(grep 'SBATCH --time' $pathBase/Rr1010/gomic0/run_graham.sh) 
+		echo "SBATCH: $sBatch"
+		echo
+		# Allow the user to modify the simulation run time
+		echo Do you want to change nstop and sbatch? \(y/n\)
+		read varTimeStep
+		if [ "$varTimeStep" == "y" ]
+		then
+			echo Enter new nstop
+			read nstopNew
+			echo Enter new sbatch
+			read sbatchNew
+		
 		#Initiating loop to cycle through paths
 		for EDR in $(seq $lbEDR $incEDR $ubEDR)
 		do
@@ -121,6 +138,11 @@ then
 				sed -i 's/ihydro   = 0/ihydro   = 0/g' main.F90
 				echo
 
+				# Modifying nstop and sbatch values
+				# ---------------------------------
+				sed -i "/#SBATCH --time=/ c #SBATCH --time=$sbatchNew" run_graham.sh
+				sed -i "148 c nstop    =$nstopNew" main.F90  
+
 				# Shifting into gomic2ihydro1 folder
 				# ----------------------------------
 				cd $pathDestination2
@@ -139,6 +161,11 @@ then
 				sed -i 's/gomic= 1/gomic= 2/g' param.inc
 				sed -i 's/ihydro   = 0/ihydro   = 1/g' main.F90
 				echo
+				
+				# Modifying nstop and sbatch values
+				# ---------------------------------
+				sed -i "/#SBATCH --time=/ c #SBATCH --time=$sbatchNew" run_graham.sh
+				sed -i "148 c nstop    =$nstopNew" main.F90  
 			done
 		done
 
